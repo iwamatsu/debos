@@ -73,12 +73,15 @@ type MmdebstrapAction struct {
 	Include          []string
 	DpkgOpts         []string `yaml:"dpkg-opts"`
 	AptOpts          []string `yaml:"apt-opts"`
+	Debug            bool `yaml:"debug"`
 }
 
 func NewMmdebstrapAction() *MmdebstrapAction {
 	d := MmdebstrapAction{}
 	// Use main as default component
 	d.Components = []string{"main"}
+
+	d.Debug = false
 
 	return &d
 }
@@ -126,6 +129,10 @@ func (d *MmdebstrapAction) PreMachine(context *debos.DebosContext, m *fakemachin
 
 func (d *MmdebstrapAction) Run(context *debos.DebosContext) error {
 	cmdline := []string{"mmdebstrap"}
+
+	if d.Debug {
+		cmdline = append(cmdline, "-d")
+	}
 
 	if d.MergedUsr != nil {
 		if *d.MergedUsr {
@@ -190,6 +197,8 @@ func (d *MmdebstrapAction) Run(context *debos.DebosContext) error {
 			return err
 		}
 	}
+
+	fmt.Printf("mmdebstrap cmd: %s", cmdline)
 
 	mmdebstrapErr := debos.Command{}.Run("Mmdebstrap", cmdline...)
 
