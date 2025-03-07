@@ -78,6 +78,7 @@ type MmdebstrapAction struct {
 	AptOpts          []string `yaml:"apt-opts"`
 	Debug            bool `yaml:"debug"`
 	CustomizeHook    []string `yaml:"customize-hook"`
+	SetupHook        []string `yaml:"setup-hook"`
 }
 
 func NewMmdebstrapAction() *MmdebstrapAction {
@@ -187,6 +188,12 @@ func (d *MmdebstrapAction) Run(context *debos.DebosContext) error {
 	if d.CustomizeHook != nil {
 		for _, opt := range d.CustomizeHook {
 			cmdline = append(cmdline, fmt.Sprintf("--customize-hook=%s", opt))
+		}
+	}
+
+	if d.SetupHook != nil {
+		for _, opt := range d.SetupHook {
+			cmdline = append(cmdline, fmt.Sprintf("--setup-hook=%s", opt))
 		}
 	}
 
