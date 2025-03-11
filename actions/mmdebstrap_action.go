@@ -18,6 +18,7 @@ and this may lead to incorrect configuration when becoming part of the created r
    include:
    dpkg-opts:
    apt-opts:
+   customize-hook:
 
 Mandatory properties:
 
@@ -48,6 +49,8 @@ Example:
 
 - apt-opts -- list of arbitrary options to apt.
 
+- customize-hook -- list of arbitrary hook for customize.
+
 */
 package actions
 
@@ -74,6 +77,7 @@ type MmdebstrapAction struct {
 	DpkgOpts         []string `yaml:"dpkg-opts"`
 	AptOpts          []string `yaml:"apt-opts"`
 	Debug            bool `yaml:"debug"`
+	CustomizeHook    []string `yaml:"customize-hook"`
 }
 
 func NewMmdebstrapAction() *MmdebstrapAction {
@@ -177,6 +181,12 @@ func (d *MmdebstrapAction) Run(context *debos.DebosContext) error {
 	if d.AptOpts != nil {
 		for _, opt := range d.AptOpts {
 			cmdline = append(cmdline, fmt.Sprintf("--aptopt=%s", opt))
+		}
+	}
+
+	if d.CustomizeHook != nil {
+		for _, opt := range d.CustomizeHook {
+			cmdline = append(cmdline, fmt.Sprintf("--customize-hook=%s", opt))
 		}
 	}
 
