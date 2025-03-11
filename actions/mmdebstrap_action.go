@@ -171,6 +171,9 @@ func (d *MmdebstrapAction) Run(context *debos.DebosContext) error {
 	if d.Include != nil {
 		s := strings.Join(d.Include, ",")
 		cmdline = append(cmdline, fmt.Sprintf("--include=%s", s))
+		if d.Variant == "custom" && strings.Contains(s, "busybox") {
+			cmdline = append(cmdline, "--hook-dir=/usr/share/mmdebstrap/hooks/busybox")
+		}
 	}
 
 	if d.DpkgOpts != nil {
